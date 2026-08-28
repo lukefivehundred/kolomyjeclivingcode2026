@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dr. Bill Kolomyjec — Living Code</title>
+  <meta name="description" content="Eight new generative animations by Dr. Bill Kolomyjec. Living systems. A fifty-year legacy in code." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --bg-elev: #fffdf8;
+      --ink: #1a1a1a;
+      --ink-soft: #4a4a46;
+      --muted: #7a766c;
+      --line: rgba(26, 26, 26, 0.12);
+      --teal: #0a3d40;
+      --teal-soft: #146266;
+      --gold: #c9a227;
+      --gold-soft: #e3c56a;
+      --card-shadow: 0 18px 50px rgba(10, 61, 64, 0.08);
+      --overlay: rgba(10, 20, 22, 0.62);
+      --hero-fade: linear-gradient(180deg, rgba(244, 241, 234, 0) 0%, var(--bg) 100%);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0b1112;
+      --bg-elev: #131b1d;
+      --ink: #f3efe6;
+      --ink-soft: #c6c0b4;
+      --muted: #8f8a80;
+      --line: rgba(243, 239, 230, 0.12);
+      --teal: #9fd3d4;
+      --teal-soft: #6fb3b6;
+      --gold: #e3c56a;
+      --gold-soft: #c9a227;
+      --card-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      --overlay: rgba(4, 8, 9, 0.78);
+      --hero-fade: linear-gradient(180deg, rgba(11, 17, 18, 0) 0%, var(--bg) 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Outfit", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    .wrap {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 72px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      text-decoration: none;
+    }
+
+    .brand-kicker {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    .brand-name {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ghost-link {
+      display: none;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--muted);
+    }
+
+    @media (min-width: 720px) {
+      .ghost-link { display: inline; }
+    }
+
+    .theme-toggle {
+      border: 1px solid var(--line);
+      background: var(--bg-elev);
+      color: var(--ink);
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .icon-sun { display: none; }
+    html[data-theme="dark"] .icon-moon { display: none; }
+    html[data-theme="dark"] .icon-sun { display: block; }
+
+    .hero-intro {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  align-items: center;
+  margin-top: 22px;
+}
+
+@media (min-width: 720px) {
+  .hero-intro {
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 28px;
+  }
+}
+
+.hero-portrait {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 1px solid var(--line);
+  box-shadow: var(--card-shadow);
+}
+
+    .hero {
+      padding: 64px 0 36px;
+    }
+
+    .hero-kicker {
+      color: var(--gold);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(42px, 7vw, 84px);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-intro p {
+      max-width: 640px;
+      margin-top: 0;
+      color: var(--ink-soft);
+      font-size: 16px;
+      font-weight: 300;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px 28px;
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      padding: 10px 0 80px;
+    }
+
+    @media (min-width: 760px) {
+      .grid { grid-template-columns: 1fr 1fr; gap: 26px; }
+    }
+
+    .card {
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.28s ease, border-color 0.28s ease;
+    }
+
+    .card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--gold) 55%, var(--line)); }
+    .card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    .thumb {
+      aspect-ratio: 16 / 10;
+      background:
+        radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--gold) 18%, transparent), transparent 40%),
+        radial-gradient(circle at 80% 80%, color-mix(in srgb, var(--teal-soft) 24%, transparent), transparent 42%),
+        #101618;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thumb img,
+    .thumb video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-fallback {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: #d7c89a;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 28px;
+      letter-spacing: 0.04em;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .live-pill {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(8, 12, 13, 0.72);
+      color: #f4efE4;
+      border: 1px solid rgba(227, 197, 106, 0.45);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 6px 9px;
+      border-radius: 999px;
+    }
+
+    .card-body {
+      padding: 18px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .card-index {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .card h2 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.05;
+    }
+
+    .card-tag {
+      color: var(--muted);
+      font-size: 13px;
+      font-style: italic;
+      font-family: "Cormorant Garamond", Georgia, serif;
+    }
+
+    .card-excerpt {
+      color: var(--ink-soft);
+      font-size: 14px;
+      font-weight: 300;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-cta {
+      margin-top: auto;
+      padding-top: 12px;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0 48px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .foot {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .foot a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.foot a:hover { color: var(--gold); }
+
+    /* Overlay / lightbox */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: var(--overlay);
+      display: none;
+      align-items: stretch;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .overlay.open { display: flex; }
+
+    .sheet {
+      width: min(1080px, 100%);
+      max-height: 100%;
+      overflow: auto;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 900px) {
+      .sheet { grid-template-columns: 1.05fr 0.95fr; }
+    }
+
+    .sheet-media {
+      background: #0c1213;
+      min-height: 280px;
+      position: relative;
+    }
+
+    .sheet-media img,
+    .sheet-media video,
+    .sheet-media iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+      object-fit: cover;
+      border: 0;
+      display: block;
+    }
+
+    .sheet-copy {
+      padding: 28px 26px 32px;
+    }
+
+    .sheet-copy h2 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 500;
+      line-height: 1;
+      margin: 8px 0 10px;
+    }
+
+    .sheet-tag {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-style: italic;
+      color: var(--gold);
+      font-size: 18px;
+      margin-bottom: 18px;
+    }
+
+    .sheet-desc {
+      color: var(--ink-soft);
+      font-size: 15px;
+      font-weight: 300;
+      white-space: pre-wrap;
+    }
+
+    .sheet-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: #f7f3ea;
+    }
+
+    html[data-theme="light"] .btn-primary,
+    html:not([data-theme]) .btn-primary {
+      background: #0a3d40;
+      color: #f7f3ea;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(8,12,13,0.55);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .placeholder-note {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    body.locked { overflow: hidden; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#top">
+        <span class="brand-kicker">Exclusive gallery presentation</span>
+        <span class="brand-name">Dr. Bill Kolomyjec</span>
+      </a>
+      <div class="nav-actions">
+        <a class="ghost-link" href="#works">The works</a>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M21 14.3A8.5 8.5 0 0 1 9.7 3 7.5 7.5 0 1 0 21 14.3z"/>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero wrap">
+     <p class="hero-kicker">Living Code · 2026</p>
+<h1>Eight living<br>systems.</h1>
+<div class="hero-intro">
+  <img class="hero-portrait" src="media/dr-bill.jpg" alt="Dr. Bill Kolomyjec" />
+  <p>
+    From punch cards and plotters in 1973 to Web3-era generative worlds,
+    Dr. Bill Kolomyjec has treated code as a medium capable of surprise,
+    poetry, and human resonance. These eight animations are not stills.
+    They are autonomous ecologies — click any work to read the full text
+    and open the live piece.
+  </p>
+</div>
+      <div class="meta-row">
+        <span>8 generative animations</span>
+        <span>Live code on GitHub Pages (where available)</span>
+        <span>50 years of algorithmic practice</span>
+      </div>
+    </section>
+
+    <section class="wrap grid" id="works" aria-label="Works"></section>
+  </main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Dr. Bill Kolomyjec. All rights reserved.</span>
+    <a href="https://www.instagram.com/drbillkolomyjec/" target="_blank" rel="noopener">Instagram</a>
+    <span>Exclusive gallery representation · The code keeps running.</span>
+  </div>
+</footer>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet" id="sheet">
+      <div class="sheet-media" id="sheetMedia"></div>
+      <div class="sheet-copy">
+        <p class="card-index" id="sheetIndex"></p>
+        <h2 id="sheetTitle"></h2>
+        <p class="sheet-tag" id="sheetTag"></p>
+        <div class="sheet-desc" id="sheetDesc"></div>
+        <div class="sheet-actions">
+          <a class="btn btn-primary" id="liveLink" target="_blank" rel="noopener">View live work</a>
+          <button class="btn btn-ghost" id="closeBtn" type="button">Close</button>
+        </div>
+      </div>
+      <button class="close" id="closeX" type="button" aria-label="Close">✕</button>
+    </div>
+  </div>
+
+  <script>
+    /*
+      GALLERY CONFIG
+      ---------------
+      Drop preview GIFs / MP4s into /media using the filenames below.
+      Replace each liveUrl with the GitHub Pages (or raw) URL for that work.
+      Descriptions marked [DRAFT] are gallery-voice placeholders — swap in Dr. Bill's final texts.
+    */
+    const WORKS = [
+      {
+        id: "ghotiAI",
+        title: "ghotiAI",
+        tagline: "Surreal biomechanical evolution in a cosmic digital womb",
+        year: "2026",
+        preview: "media/ghotiAI.gif",
+        liveUrl: "https://assets.objkt.media/rewrite/file/assets-003/bafybeian4c2yirh4jdit3kvkbngv757zsykmmgkwxp2yflfiv4hxbzrb7e/artifact/index.html",
+        description: `ghotiAI is a return journey to a student film I collaborated on in 1985.
+
+ghotiAI: A Generative Alien Ecosystem is a generative 3D art piece, a self-sustaining digital ecosystem presented as a window into an alien world. The title, a play on the pronunciation of "fish," hints at the work's theme: a complex, aquatic-like habitat that evolves and lives on its own.
+
+At the heart of the piece is a large, central "habitat"—a massive, semi-permeable shield that breathes with a slow, anamorphic pulse. Its surface shimmers with an iridescent, oily quality, protecting the life within. Inside this barrier floats a cluster of static, bioluminescent structures, like a form of alien coral. These tubes, in hues of deep blue, violet, and white, pulse gently with their own internal light.
+
+This central cluster is not isolated. The entire scene is set in a vast expanse of deep space, populated by a distant, twinkling star-field and ghostly clouds. In the far distance, a massive, swirling portal of light and energy turns like a cosmic eye, framed by crystalline "fingers" that seem to beckon or warn. Surrounding the main habitat are the "outer fields"—a vast swarm of hundreds of smaller, plankton-like entities that drift and pulse with a firefly-like glow.
+
+The ecosystem is not entirely peaceful. It is a world of dynamic, interlocking life cycles driven by external events.
+
+The first event is "Interruption." Periodically, aggressive red entities, or "Interlopers," spawn from the void and speed towards the habitat. They strike the shield, which flashes a brilliant white in defense, and are repelled, recoiling with a "squashing" motion before bouncing back into deep space.
+
+The second event is "Propagation." A different kind of entity, a red-orange "Propagator," also journeys from the void. This one, however, is not stopped by the shield. It penetrates the barrier, flashing the shield a deep orange, and collides with one of the static tubes inside, sacrificing itself in a burst of light.
+
+This sacrificial act is not one of destruction, but of reproduction. The "genetic code" of the destroyed tube is transferred to a new "Mother Sphere." This glowing orange orb, gestating a cluster of juveniles within it, begins a slow, deliberate journey away from the central cluster and out toward the void. As it travels, its young mature, their color shifting from bright orange to a deep red.
+
+Once it reaches its destination, the Mother Sphere bursts, releasing its "Juveniles." These young spheres then begin their own migration, journeying toward the outer plankton fields. As they travel, they grow, oscillate, and mature into their final adult colors. Upon arriving at the field, a new life is sparked, and an older drifter fades away, completing a perpetual cycle of life, death, conflict, and renewal.
+
+
+--------------------------
+
+Information about the original ghoti:
+
+https://www.youtube.com/watch?v=My8Qm-qwj-g
+
+A student film I collaborated on at OSU-CGRG
+
+Film credits: ghoti (c) 1985 Anne Seidman OSU-CGRG
+The Ohio State University, Computer Graphics Research Group and Dept. of Art Edition. Charles A. Csuri, Director.
+
+Concept and Design: Anne Seidman
+Animation: Anne Seidman, Bill Kolomyjec and John Donkin
+Music: Neil Yokum
+Thanks: Julian Gomez, Tom Longtin, George Karl`
+      },
+      {
+        id: "bucky-graphullerene",
+        title: "Bucky Graphullerene",
+        tagline: "A vibrant molecular metropolis of data flow and atomic vitality",
+        year: "2026",
+        preview: "media/bucky-graphullerene.gif",
+        liveUrl: "https://assets.objkt.media/rewrite/file/assets-003/bafybeico4m2ty7nfnx75q7jbe6fcm6cryceyzuavejayhq74cq4bym2nta/artifact/index.html",
+        description: `BuckyGraphullerene is a generative artwork that visualizes the theoretical interplay between macro and micro geometries of carbon allotropes. Set against a deep midnight blue void, the piece constructs a dual-layered simulation of "Graphullerene"—a 2D crystalline polymer of C60 buckyballs.
+
+The Composition
+
+The work is defined by two independently rotating structures that create a sense of vast scale and depth:
+
+The Cage (Macro): An exaggerated, massive C60 Fullerene cage encloses the scene. Rendered with thick, structural white beams and immense vertex spheres, it acts as a celestial sphere or containment vessel. It is illuminated by a selective central point light, causing it to glow from within without washing out the delicate interior.
+
+The Lattice (Micro): Floating inside is a complex hexagonal sheet of fused C60 cages. This inner structure rotates on a counter-axis to the outer cage, creating a mesmerizing, tumbling parallax effect. The nodes here are rendered as semi-opaque, phantom-white spheres, suggesting a state of flux or potentiality.
+
+The Travelers
+
+Five autonomous agents, or "Travelers," navigate the inner lattice. Their colors are derived from a procedural pentagonal palette—five hues spaced exactly 72 degrees apart on the color wheel—ensuring a harmonious yet distinct visual identity.
+
+As they traverse the graph, they do not merely sit atop the nodes but encompass them in semi-opaque glass-like shells. Their movement leaves a trailing history, painting temporary pathways through the carbon lattice.
+
+The Event
+
+The artwork is not static; it is a system in constant negotiation. When two Travelers intersect at a single node, a dramatic reaction is triggered. The node expands rapidly, pulsing with a blinding gold and white light. This "energy pop" represents a collision of data, a chemical reaction, or a moment of shared existence in the void, before the agents drift apart once more.
+
+Medium: Generative JavaScript (Three.js), Real-time WebGL Simulation`
+      },
+      {
+        id: "boid-world",
+        title: "Boid World",
+        tagline: "A living digital cosmos of collective intelligence",
+        year: "2026",
+        preview: "media/boid-world.gif",
+        liveUrl: "https://assets.objkt.media/rewrite/file/assets-003/bafybeiegrtlyeb7xdmnpalttsf6czmitlnvv3rpbongxhbgwhogm2mbwmu/artifact/index.html",
+        description: `Medium: Generative WebGL (Three.js), Reynolds’ Flocking Algorithms, HTML5 Canvas
+Format: Interactive Real-time Simulation
+
+The Concept
+Boid World is a study in emergent digital behavior, presenting a procedurally generated exoplanet that exists in a state of perpetual flow. Rather than rendering solid geometry, the world is constructed using a 3D pointillist technique—continents are not meshes, but clusters of glowing "stars" that breathe and pulse rhythmically, suggesting a planet that is itself a living organism.
+
+The atmosphere is populated by "living comets"—autonomous agents governed by modified Boid (Bird-oid Object) logic. These entities do not just flock; they navigate a complex environment, instinctively avoiding the turbulence of spiraling hurricane systems and the high-elevation peaks of the topography below.
+
+The Technique
+Built using Three.js, the simulation relies heavily on math-based aesthetic decisions rather than static assets:
+
+Topography: Continents are generated via spherical distribution algorithms, with elevation curves determining color palettes that shift from coastal gold to forest green and alpine white.
+
+Atmosphere: A custom shader applies a Fresnel glow to the planetary rim, simulating the scattering of light through an atmosphere.
+
+Behavior: The particle system utilizes a history trail buffer to create the visual of "drag" and speed, while the physics engine calculates real-time vectors for cohesion, separation, and obstacle avoidance against the rotating planetary bodies.
+
+The viewer becomes a cosmic photographer. Time can be held; a still can be taken. Fleeting algorithmic motion becomes a composition that will never repeat.`
+      },
+      {
+        id: "bioluminescent-blobs",
+        title: "Bioluminescent Blobs",
+        tagline: "Dreamlike abyssal life in perpetual, responsive motion",
+        year: "2026",
+        preview: "media/bioluminescent-blobs.gif",
+        liveUrl: "https://kolomyjec.github.io/biolumBlobs/",
+        description: `Four translucent, cilia-fringed blobs drift and orbit through a 100,000-particle bioluminescent swarm suspended in a deep-hued void. Each blob carries its own glowing nucleus and a membrane that catches light like wet tissue.
+
+The whole scene breathes. As two blobs drift close, their color intensifies, flaring brighter before fading as they part. A slow twisting field warps the swarm and the cilia in unison. Real-time bloom softens every hot spot. A triadic palette is re-randomized on every load, so no two visits look quite the same.
+
+Drag to orbit. Scroll to zoom. Space or P pauses. Built with Three.js.`
+      },
+      {
+        id: "quantum-wormhole",
+        title: "Quantum Wormhole",
+        tagline: "An infinite journey through flux, reinvention, and quantum possibility",
+        year: "2026",
+        preview: "media/quantum-wormhole.gif",
+        liveUrl: "https://lukefivehundred.github.io/quantumWormhole/",
+        description: `"Quantum Wormhole" is a mesmerizing generative artwork that takes viewers on an infinite, high-speed journey through a shifting cosmic void. The piece features a procedural, glowing tunnel constructed from thousands of luminescent particles that twist and curve along a rollercoaster-like path through a deep starfield.
+
+As the viewpoint accelerates, it periodically encounters geometric "anticipation gates" that trigger dramatic quantum jumps. With every jump, the universe mutates—shifting its cosmic color palette, altering the dimensional shape of the tunnel, and charting a brand-new flight path into the unknown.`
+      },
+      {
+        id: "sky-above-clouds",
+        title: "skyAboveClouds",
+        tagline: "An algorithmic echo of O’Keeffe’s infinite horizon",
+        year: "2026",
+        preview: "media/sky-above-clouds.gif",
+        liveUrl: "https://kolomyjec.github.io/SkyAboveClouds/",
+        description: `Georgia O’Keeffe’s Sky Above Clouds series captured the sublime, overwhelming vastness of the heavens—a perspective shifting from the observer on the ground to the explorer among the clouds. In SkyAboveCloudsAI, Dr. Kolomyjec translates that painterly obsession into the medium of procedural code.
+
+Where O’Keeffe used oil on canvas to immortalize a singular, infinite expansion, this work utilizes algorithms to render that expansion perpetual. It is a dialogue between the organic, ephemeral nature of weather and the rigid, mathematical nature of computation.
+
+Every cloud, star, and shift in atmospheric light is generated in real time. Procedural clouds are born, traverse the viewport, and dissolve. A continuous color function moves through night blues, sunrise golds, and noon clarity. Designed as an infinite loop, the piece is a meditative installation that asks whether the binary and the procedural can capture the essence of the sublime—an attempt to find the quiet, painterly soul within the code.`
+      },
+      {
+        id: "pandoras-jar",
+        title: "Pandoras Jar",
+        tagline: "Curiosity as a generative system — what escapes is never the same twice",
+        year: "2026",
+        preview: "media/pandoras-jar.gif",
+        liveUrl: "https://kolomyjec.github.io/pandorasJar/",
+        description: `A generative WebGL piece: a glass pithos suspended in darkness, holding five living swarms.
+
+In the myth, Pandora opens the jar and everything but Hope escapes into the world. Here, nothing escapes. The vessel is sealed, transparent, and everything she released is still inside it — churning against the glass, visible but never free.
+
+Four swarms are the Furies: dense, restless clouds of color that press in close on each other and never fully settle, each tuned to its own hue and its own breathing rhythm — expanding, contracting, drifting through the jar on a cycle that never repeats twice. The fifth is Hope herself: a single warm white-gold form, looser and more solitary than the others, reading as solid and calm against their haze.
+
+The jar itself is real glass, not a painted illusion — light refracts and catches at the rim the way it would on an actual vessel, so the swarms inside dim and flare as the camera drifts around it. There's no fixed viewpoint and no end state. Orbit it, zoom into it, and the piece keeps breathing on its own.
+
+Built with Three.js, running entirely in the browser — no build step, no dependencies beyond the bundled three.min.js.`
+      },
+      {
+        id: "pikachus-flying-torus",
+        title: "pikachu's Flying Torus",
+        tagline: "Playful topology in flight — a pop spark on a serious geometric object",
+        year: "2026",
+        preview: "media/pikachus-flying-torus.gif",
+        liveUrl: "https://kolomyjec.github.io/pikachusFlyingTorus/",
+        description: `A Pikachu-shaped worm — seven spring-linked body segments, ears, cheeks, and a wagging tail — chases its own tail along the centerline of a glowing, translucent trefoil knot, quickening on the straightaways and easing into the tight bends like a coaster reading the track.
+
+Three Poké Ball spheres race along twin helices wound around the knot. When one drifts close to Pikachu, a coin-flip zap decides its fate: it passes unharmed, or swells and, on a second close pass, releases a small glowing orb that joins a starlit belt of 150 pulsing fireflies.
+
+The scene sits in deep navy space. The camera is locked to a cyan point of view, tracking Pikachu at a deliberately choppy, handheld 12 frames per second. The piece runs on its own. Open the page and let it fly.`
+      }
+    ];
+
+    const grid = document.getElementById("works");
+    const overlay = document.getElementById("overlay");
+    const liveLink = document.getElementById("liveLink");
+
+    const excerpt = (text) => text
+      .replace(/^\s*#{1,6}\s+/gm, "")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/`([^`]+)`/g, "$1")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    function mediaTag(src, title) {
+      const ext = (src.split(".").pop() || "").toLowerCase();
+      if (ext === "mp4" || ext === "webm") {
+        return `<video autoplay muted loop playsinline poster="" aria-label="${title}"><source src="${src}"></video>`;
+      }
+      return `<img src="${src}" alt="${title}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'thumb-fallback',textContent:'Preview GIF forthcoming'}))">`;
+    }
+
+    WORKS.forEach((work, i) => {
+      const n = String(i + 1).padStart(2, "0");
+      const btn = document.createElement("button");
+      btn.className = "card";
+      btn.type = "button";
+      btn.setAttribute("aria-label", `Open ${work.title}`);
+      btn.innerHTML = `
+        <div class="thumb">
+          ${mediaTag(work.preview, work.title)}
+          <span class="live-pill">Live code</span>
+        </div>
+        <div class="card-body">
+          <p class="card-index">${n}  /  ${work.year}</p>
+          <h2>${work.title}</h2>
+          <p class="card-tag">${work.tagline}</p>
+          <p class="card-excerpt">${excerpt(work.description)}</p>
+          <p class="card-cta">Read the work →</p>
+        </div>`;
+      btn.addEventListener("click", () => openWork(work, n));
+      grid.appendChild(btn);
+    });
+
+    function openWork(work, n) {
+      document.getElementById("sheetIndex").textContent = `${n}  ·  ${work.year}`;
+      document.getElementById("sheetTitle").textContent = work.title;
+      document.getElementById("sheetTag").textContent = work.tagline;
+      document.getElementById("sheetDesc").textContent = work.description;
+      document.getElementById("sheetMedia").innerHTML = mediaTag(work.preview, work.title);
+      liveLink.href = work.liveUrl;
+      overlay.classList.add("open");
+      document.body.classList.add("locked");
+      document.getElementById("closeX").focus();
+    }
+
+    function closeWork() {
+      overlay.classList.remove("open");
+      document.body.classList.remove("locked");
+    }
+
+    document.getElementById("closeBtn").addEventListener("click", closeWork);
+    document.getElementById("closeX").addEventListener("click", closeWork);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeWork(); });
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeWork(); });
+
+const root = document.documentElement;
+const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+const saved = localStorage.getItem("living-code-theme");
+
+function systemTheme() {
+  return themeQuery.matches ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+  root.setAttribute("data-theme", theme);
+}
+
+applyTheme(saved || systemTheme());
+
+themeQuery.addEventListener("change", () => {
+  if (!localStorage.getItem("living-code-theme")) applyTheme(systemTheme());
+});
+
+document.getElementById("themeToggle").addEventListener("click", () => {
+  const next = (root.getAttribute("data-theme") === "dark") ? "light" : "dark";
+  applyTheme(next);
+  localStorage.setItem("living-code-theme", next);
+});
+  </script>
+</body>
+</html>
