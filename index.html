@@ -346,40 +346,63 @@
 
 .foot a:hover { color: var(--gold); }
 
-    /* Overlay / lightbox */
+    /* Overlay / lightbox
+       Media pane is locked so long descriptions cannot stretch the GIF.
+       Only the text column scrolls. */
     .overlay {
       position: fixed;
       inset: 0;
       z-index: 40;
       background: var(--overlay);
       display: none;
-      align-items: stretch;
+      align-items: center;
       justify-content: center;
-      padding: 18px;
+      padding: 16px;
     }
 
     .overlay.open { display: flex; }
 
     .sheet {
+      position: relative;
       width: min(1080px, 100%);
-      max-height: 100%;
-      overflow: auto;
+      max-height: min(92vh, 900px);
+      overflow: hidden;
       background: var(--bg-elev);
       border: 1px solid var(--line);
       border-radius: 22px;
       box-shadow: 0 30px 80px rgba(0,0,0,0.35);
       display: grid;
       grid-template-columns: 1fr;
+      grid-template-rows: auto minmax(0, 1fr);
     }
 
     @media (min-width: 900px) {
-      .sheet { grid-template-columns: 1.05fr 0.95fr; }
+      .sheet {
+        grid-template-columns: minmax(0, 1.02fr) minmax(280px, 0.98fr);
+        grid-template-rows: minmax(0, 1fr);
+        align-items: stretch;
+      }
     }
 
     .sheet-media {
       background: #0c1213;
-      min-height: 280px;
       position: relative;
+      aspect-ratio: 16 / 10;
+      max-height: 42vh;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    @media (min-width: 900px) {
+      .sheet-media {
+        aspect-ratio: auto;
+        height: 100%;
+        max-height: none;
+        min-height: 0;
+      }
     }
 
     .sheet-media img,
@@ -387,14 +410,19 @@
     .sheet-media iframe {
       width: 100%;
       height: 100%;
-      min-height: 320px;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      object-position: center;
       border: 0;
       display: block;
     }
 
     .sheet-copy {
       padding: 28px 26px 32px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      min-height: 0;
     }
 
     .sheet-copy h2 {
@@ -557,8 +585,10 @@
       GALLERY CONFIG
       ---------------
       Drop preview GIFs / MP4s into /media using the filenames below.
+      For GIFs: export ~960–1280px on the long side, 12–16fps, 128–256 colors.
+      Aim for ~0.8–1.2MB each so eight works stay under ~10MB total.
+      Do not make one giant GIF — the sheet no longer upscales past the pane.
       Replace each liveUrl with the GitHub Pages (or raw) URL for that work.
-      Descriptions marked [DRAFT] are gallery-voice placeholders — swap in Dr. Bill's final texts.
     */
     const WORKS = [
       {
@@ -738,12 +768,13 @@ The scene sits in deep navy space. The camera is locked to a cyan point of view,
       .replace(/\s+/g, " ")
       .trim();
 
-    function mediaTag(src, title) {
+    function mediaTag(src, title, lazy) {
       const ext = (src.split(".").pop() || "").toLowerCase();
       if (ext === "mp4" || ext === "webm") {
-        return `<video autoplay muted loop playsinline poster="" aria-label="${title}"><source src="${src}"></video>`;
+        return `<video autoplay muted loop playsinline aria-label="${title}"><source src="${src}"></video>`;
       }
-      return `<img src="${src}" alt="${title}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'thumb-fallback',textContent:'Preview GIF forthcoming'}))">`;
+      const lazyAttr = lazy ? ' loading="lazy" decoding="async"' : ' decoding="async"';
+      return `<img src="${src}" alt="${title}"${lazyAttr} onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'thumb-fallback',textContent:'Preview GIF forthcoming'}))">`;
     }
 
     WORKS.forEach((work, i) => {
@@ -754,7 +785,7 @@ The scene sits in deep navy space. The camera is locked to a cyan point of view,
       btn.setAttribute("aria-label", `Open ${work.title}`);
       btn.innerHTML = `
         <div class="thumb">
-          ${mediaTag(work.preview, work.title)}
+          ${mediaTag(work.preview, work.title, true)}
           <span class="live-pill">Live code</span>
         </div>
         <div class="card-body">
@@ -773,7 +804,7 @@ The scene sits in deep navy space. The camera is locked to a cyan point of view,
       document.getElementById("sheetTitle").textContent = work.title;
       document.getElementById("sheetTag").textContent = work.tagline;
       document.getElementById("sheetDesc").textContent = work.description;
-      document.getElementById("sheetMedia").innerHTML = mediaTag(work.preview, work.title);
+      document.getElementById("sheetMedia").innerHTML = mediaTag(work.preview, work.title, false);
       liveLink.href = work.liveUrl;
       overlay.classList.add("open");
       document.body.classList.add("locked");
